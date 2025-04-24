@@ -65,7 +65,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-m', type=str, default='UniSRec', help='model name')
     parser.add_argument('-d', type=str, default='All_Beauty', help='dataset name')
-    parser.add_argument('-p', type=str, default='', help='pre-trained model path')
     args, unparsed = parser.parse_known_args()
     print(args)
 

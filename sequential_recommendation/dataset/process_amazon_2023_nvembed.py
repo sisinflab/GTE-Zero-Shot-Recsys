@@ -191,8 +191,6 @@ if __name__ == '__main__':
     Generate item features
     '''
     device = torch.device(args.device)
-    # tokenizer = AutoTokenizer.from_pretrained(args.plm)
-    # model = AutoModel.from_pretrained(args.plm).to(device)
     model = AutoModel.from_pretrained(
         args.plm, 
         trust_remote_code=True, 
@@ -207,10 +205,8 @@ if __name__ == '__main__':
         batch = sorted_text[pr:pr + args.batch_size]
         # inputs = tokenizer(batch, padding=True, truncation=True, max_length=512, return_tensors='pt').to(device)
         with torch.no_grad():
-            # outputs = model(**inputs)
             outputs = model.encode(batch, instruction="", max_length=512)
             outputs = F.normalize(outputs, p=2, dim=1)
-        # embeddings = outputs.last_hidden_state[:, 0, :].cpu().numpy()
         embeddings = outputs.cpu().numpy()
         all_embeddings.append(embeddings)
     all_embeddings = np.concatenate(all_embeddings, axis=0)
