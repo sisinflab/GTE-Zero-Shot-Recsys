@@ -1,6 +1,8 @@
 # Do We Really Need Specialization? Evaluating Generalist Text Embeddings for Zero-Shot Recommendation and Search
 
-This repository contains the code to reproduce the experiments of the paper entitled "Do We Really Need Specialization? Evaluating Generalist Text Embeddings for Zero-Shot Recommendation and Search". All the experiments have been conducted on a machine equipped with an AMD EPYC 7452 processor and an Nvidia H100 NVL GPU on Ubuntu 22.04 LTS. The code may be reproduced on other operative system with the arragment needed. 
+This repository contains the code to reproduce the experiments from the paper **"Do We Really Need Specialization? Evaluating Generalist Text Embeddings for Zero-Shot Recommendation and Search."**  
+All experiments were conducted on a machine equipped with an **AMD EPYC 7452** processor and an **NVIDIA H100 NVL** GPU running **Ubuntu 22.04 LTS**.  
+The code should be reproducible on other operating systems with minimal adjustments.
 
 
 ## Setting Up the Virtual Environment
@@ -16,49 +18,53 @@ pip3 install -r requirements.txt
 
 
 # Sequential Recommendation
-Here there are some details to reproduce the results on Sequential Recommendation. In the `sequential_recommendation` folder, there are all the scripts needed to process the dataset and run the experiments.
+<!-- Here there are some details to reproduce the results on Sequential Recommendation. In the `sequential_recommendation` folder, there are all the scripts needed to process the dataset and run the experiments. -->
 
-## Process the dataset
-To process the dataset, please navigate to `sequential_recommendation/dataset` folder. Here there are four files that allow you to download and process the datasets with all the PLMs discussed in the paper. 
+The `sequential_recommendation` directory contains scripts for processing datasets and running experiments for sequential recommendation tasks.
+
+## Dataset Processing
+To process the dataset, please navigate to `sequential_recommendation/dataset` folder. Four scripts are provided to download and preprocess datasets using different PLMs.
 
 > [!NOTE]  
-> For the `text-embedding-3-large` you are required to put youe ENDPOINT and API-KEY to access to OpenAI models.
+> For the `text-embedding-3-large` please supply your API endpoint and API key
 
-For instance, to obtain the results with `blair` please run the following
+<!-- For instance, to obtain the results with `blair` please run the following -->
+To process datasets with, for example, the `blair` model, run
 ```bash
 cd sequential_recommendation/dataset/
 python process_amazon_2023.py \
-    --domain <my_domain> \
-    --device <my_device> \
-    --plm <my_plm>
+    --domain <domain_name> \
+    --device <device_type> \
+    --plm <plm_name>
 ```
-where:
+**Arguments**:
 - `--domain`: The domain of the Amazon Reviews 2023 dataset you are considering. Select one of `All_Beauty`, `Video_Games`, `Baby_Products`.
-- `--device`: Select `cuda:0` or `cpu`.
+- `--device`: Specify `cuda:0` or `cpu`.
 - `--plm`: The version of `blair` you are considering. Select one of `hyp1231/blair-roberta-base`, `hyp1231/blair-roberta-large`.
 
-Similarly, you can download and process the dataset with the other PLMs, namely `text-embedding-3-large`, `KALM`, and `NVEmbed-v2`
+Similarly, datasets can be processed for `text-embedding-3-large`, `KALM`, and `NVEmbed-v2`.
+<!-- you can download and process the dataset with the other PLMs, namely `text-embedding-3-large`, `KALM`, and `NVEmbed-v2` -->
 
 
 ## Train and evaluate the models
-To train the models it is necessary to create config files needed by RecBole. You may do this by running the following commands:
+To train the models it is necessary to generate the configuration files required by RecBole. You may do this by running the following commands:
 ```bash
 cd sequential_recommendation/
 python create_config.py \
-    -m <my_model> \
-    --plm <my_plm> \
+    -m <model_name> \
+    --plm <plm_type> \
 ```
 where:
-- `-m`: The sequential recommendation model you want to test. Please, select one of the following: `UniSRec`, `SASRecText`, `GRU4RecText`.
-- `--plm`: The PLM you want to test. Plese, select one of `blair-base`, `blair-large`, `nvembedv2`, `kalm`, `openai`.
+- `-m`: The sequential recommendation model you want to test. Please, select one of `UniSRec`, `SASRecText`, `GRU4RecText`.
+- `--plm`: The PLM type. Plese, select one of `blair-base`, `blair-large`, `nvembedv2`, `kalm`, `openai`.
 
-Once you create the necessary config files, you can run the experiments via the following commands:
+Once you create the necessary config files, you can run the experiments via the following command:
 
 ```bash
 python run.py \
-    -m <my_recommendation_model> \
-    -d <my_dataset> \
-    --gpu_id=<my_id>
+    -m <recommendation_model_name> \
+    -d <domain_name> \
+    --gpu_id=<gpu_id>
 ```
 where:
 - `-m`: The sequential recommendation model you want to test. Please, select one of the following: `UniSRec`, `SASRecText`, `GRU4RecText` for the text-based baselines.
@@ -68,63 +74,52 @@ where:
 
 # Product Search
 
-## Reproduction - Dense Retrieval Methods
+## Download data
+Download the processed data from [Google Drive](https://drive.google.com/file/d/1p_x0ec1PgRxLzpcj7dAcasDU-4P8CeN6/view?usp=sharing). Unzip and put `sampled_item_metadata_esci.jsonl` and `test.csv` under `product_search/cache/esci/`;
+
+
+## Generate Query/Item Representations
+
+To generate query/item representations, navigate to the folder `product_search/`. Here there are several scripts to generate the query/item representations and cache them with all the models considered in the paper. 
 
 > [!NOTE]  
-> The original code has been refactored to be more concise and clean. As a result, the product search results could be slightly different from the numbers in our paper.
+> For the `text-embedding-3-large` you are required to put your ENDPOINT and API-KEY to access to OpenAI models. Only `blair` embeddings can be genetated by the same script, namely `generate_emb_blair`.
 
-(Optional, only if you'd like to reproduce our results on ESCI)
-* Download the processed data from [Google Drive](https://drive.google.com/file/d/1p_x0ec1PgRxLzpcj7dAcasDU-4P8CeN6/view?usp=sharing);
-* Unzip and put `sampled_item_metadata_esci.jsonl` and `test.csv` under `AmazonReviews2023/product_search_results/cache/esci/`;
-
-First generate dense query/item representations and cache them
-
+To generate blair embeddings you may run the following commands:
 ```bash
-python generate_emb.py --dataset McAuley-Lab/Amazon-C4 --plm_name hyp1231/blair-roberta-base --feat_name blair-base
+python generate_emb_blair.py --dataset <dataset_name> --plm_name <plm_name> --feat_name blair-base
+```
+Where:
+- `--dataset`: The dataset you want to consider. It must be either `McAuley-Lab/Amazon-C4` or `esci`.
+- `--plm_name`: The version of the blair model you want to consider. It may be `hyp1231/blair-roberta-base` or `hyp1231/blair-roberta-base`.
+- `--feat_name`: The name of the serialized features.
+
+For the other models you don't need to specify the `--plm_name`. For instance, for `NVEmbedv2` you may run the following:
+```bash
+python generate_emb_nvembedv2.py --dataset <dataset_name>
 ```
 
-Then evaluate the product search performance
+## Evaluate Product Search Performance
 
 ```bash
-python eval_search.py --dataset McAuley-Lab/Amazon-C4 --suffix blair-baseCLS --domain
+python eval_search.py --dataset <dataset_name> --suffix <embedding_suffix> --domain
 ```
 
-**Arguments**
+Where 
+- `--dataset`: The dataset you want to consider. It must be either `McAuley-Lab/Amazon-C4` or `esci`.
+- `--suffix`: The suffix of the embeddings you extracted.
+- `--domain`: Whether to extract the results for each domain of the dataset.
 
-* `--dataset`
-    * `McAuley-Lab/Amazon-C4`
-    * `esci`
 
-* `--plm_name`
-    * `roberta-base`
-    * `roberta-large`
-    * `princeton-nlp/sup-simcse-roberta-base`
-    * `princeton-nlp/sup-simcse-roberta-large`
-    * `hyp1231/blair-roberta-base`
-    * `hyp1231/blair-roberta-large`
-
-> [!NOTE]  
-> Please update `--feat_name` and `--suffix` accordingly.
-
-## Baseline - BM25
-
-(Optional, only if you'd like to reproduce our results on ESCI)
-* Download the processed data from [Google Drive](https://drive.google.com/file/d/1p_x0ec1PgRxLzpcj7dAcasDU-4P8CeN6/view?usp=sharing);
-* Unzip and put `sampled_item_metadata_esci.jsonl` and `test.csv` under `AmazonReviews2023/product_search_results/cache/esci/`;
+For `BM25`, please run the following command:
 
 ```bash
-python bm25.py --dataset McAuley-Lab/Amazon-C4
+python bm25.py --dataset <dataset_name>
 ```
 
-**Arguments**
+Where 
+- `--dataset`: The dataset you want to consider. It must be either `McAuley-Lab/Amazon-C4` or `esci`.
 
-* `--dataset`
-    * `McAuley-Lab/Amazon-C4`
-    * `esci`
 
-## Data Preprocessing - ESCI
-
-```bash
-python dataset/process_esci.py
-```
-
+## Acknowledgement
+The codebase is built upon [this repository](https://github.com/hyp1231/AmazonReviews2023) 
