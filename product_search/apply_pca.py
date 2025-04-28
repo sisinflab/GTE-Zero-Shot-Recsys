@@ -5,18 +5,17 @@ import os
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--suffix', type=str, required=True, help='suffix of the embs')
-parser.add_argument('--plm_size', type=int, required=True, help='suffix of the embs')
+parser.add_argument('--suffix', type=str, required=True, help='suffix of the embeddings')
+parser.add_argument('--dataset', type=str, default='McAuley-Lab/Amazon-C4', choices=['McAuley-Lab/Amazon-C4', 'esci'])
+parser.add_argument('--plm_size', type=int, required=True, help='size of the embeddings')
 args = parser.parse_args()
 
-if 'Amazon-C4' in args.suffix:
-    item_path = os.path.join('cache', 'Amazon-C4', args.suffix)
-    pref = args.suffix.split('.')[-1]
-    query_path = os.path.join('cache', 'Amazon-C4', f"Amazon-C4.q_{pref}")
-elif 'esci' in args.suffix:
-    item_path = os.path.join('cache', 'esci', args.suffix)
-    pref = args.suffix.split('.')[-1]
-    query_path = os.path.join('cache', 'esci', f"esci.q_{pref}")
+if args.dataset == 'McAuley-Lab/Amazon-C4':
+    item_path = os.path.join('cache', 'Amazon-C4', f"Amazon-C4.{args.suffix}")
+    query_path = os.path.join('cache', 'Amazon-C4', f"Amazon-C4.q_{args.suffix}")
+elif args.dataset == 'esci':
+    item_path = os.path.join('cache', 'esci', f"esci.{args.suffix}")
+    query_path = os.path.join('cache', 'esci', f"esci.q_{args.suffix}")
 else:
     raise ValueError('Dataset not supported!')
 

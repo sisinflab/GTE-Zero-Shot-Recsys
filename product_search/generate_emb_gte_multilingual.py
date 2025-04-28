@@ -26,7 +26,7 @@ def sentence2emb(args, order_texts, feat_name, tokenizer, model):
     print('Embeddings shape: ', embeddings.shape)
 
     file = os.path.join(args.cache_path, args.dataset_name,
-                        args.dataset_name + f'.{feat_name}' + args.emb_type)
+                        args.dataset_name + f'.{feat_name}')
     embeddings.tofile(file)
 
 
@@ -78,7 +78,6 @@ def parse_args():
     parser.add_argument('--cache_path', type=str, default='./cache/')
     parser.add_argument('--gpu_id', type=int, default=0, help='ID of running GPU')
     parser.add_argument('--plm_name', type=str, default='Alibaba-NLP/gte-multilingual-base')
-    parser.add_argument('--emb_type', type=str, default='CLS', help='item text emb type, can be CLS or Mean')
     parser.add_argument('--feat_name', type=str, default='gte-multilingual-base', help='')
     return parser.parse_args()
 

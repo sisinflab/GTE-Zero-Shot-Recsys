@@ -28,20 +28,13 @@ def sentence2emb(args, order_texts, feat_name, tokenizer, model, prompt=None):
             encoded_sentences = tokenizer(sentences, padding=True, max_length=512,
                                       truncation=True, return_tensors='pt').to(args.device)
             outputs = model(**encoded_sentences)
-            if args.emb_type == 'CLS':
-                cls_output = outputs.last_hidden_state[:, 0, ].detach().cpu()
-                embeddings.append(cls_output)
-            elif args.emb_type == 'Mean':
-                masked_output = outputs.last_hidden_state * encoded_sentences['attention_mask'].unsqueeze(-1)
-                mean_output = masked_output[:,1:,:].sum(dim=1) / \
-                    encoded_sentences['attention_mask'][:,1:].sum(dim=-1, keepdim=True)
-                mean_output = mean_output.detach().cpu()
-                embeddings.append(mean_output)
+            cls_output = outputs.last_hidden_state[:, 0, ].detach().cpu()
+            embeddings.append(cls_output)
     embeddings = torch.cat(embeddings, dim=0).numpy()
     print('Embeddings shape: ', embeddings.shape)
 
     file = os.path.join(args.cache_path, args.dataset_name,
-                        args.dataset_name + f'.{feat_name}' + args.emb_type)
+                        args.dataset_name + f'.{feat_name}')
     embeddings.tofile(file)
 
 
@@ -92,9 +85,7 @@ def parse_args():
     parser.add_argument('--dataset', type=str, default='McAuley-Lab/Amazon-C4', choices=['McAuley-Lab/Amazon-C4', 'esci'])
     parser.add_argument('--cache_path', type=str, default='./cache/')
     parser.add_argument('--gpu_id', type=int, default=0, help='ID of running GPU')
-    # parser.add_argument('--plm_name', type=str, default='hyp1231/blair-roberta-base')
-    parser.add_argument('--plm_name', type=str, default='/home/attmat/pps_blair/AmazonReviews2023/blair/checkpoints/blair-roberta-base')
-    parser.add_argument('--emb_type', type=str, default='CLS', help='item text emb type, can be CLS or Mean')
+    parser.add_argument('--plm_name', type=str, default='hyp1231/blair-roberta-base')
     parser.add_argument('--feat_name', type=str, default='blair-base', help='')
     return parser.parse_args()
 

@@ -6,8 +6,6 @@ from tqdm import tqdm
 from datasets import load_dataset
 from transformers import AutoModel, AutoTokenizer
 from huggingface_hub import hf_hub_download
-import torch.nn.functional as F
-from sentence_transformers import SentenceTransformer
 import tiktoken
 from openai import AzureOpenAI
 import numpy as np

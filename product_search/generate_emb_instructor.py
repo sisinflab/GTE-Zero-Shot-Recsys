@@ -35,7 +35,7 @@ def sentence2emb(args, order_texts, feat_name, model, prompt=None, typ=None):
     print('Embeddings shape: ', embeddings.shape)
 
     file = os.path.join(args.cache_path, args.dataset_name,
-                        args.dataset_name + f'.{feat_name}' + args.emb_type)
+                        args.dataset_name + f'.{feat_name}')
     embeddings.tofile(file)
 
 
@@ -93,9 +93,7 @@ def parse_args():
     parser.add_argument('--dataset', type=str, default='McAuley-Lab/Amazon-C4', choices=['McAuley-Lab/Amazon-C4', 'esci'])
     parser.add_argument('--cache_path', type=str, default='./cache/')
     parser.add_argument('--gpu_id', type=int, default=0, help='ID of running GPU')
-    # parser.add_argument('--plm_name', type=str, default='hyp1231/blair-roberta-base')
     parser.add_argument('--plm_name', type=str, default='hkunlp/instructor-xl')
-    parser.add_argument('--emb_type', type=str, default='CLS', help='item text emb type, can be CLS or Mean')
     parser.add_argument('--feat_name', type=str, default='instructor-xl', help='')
     return parser.parse_args()
 

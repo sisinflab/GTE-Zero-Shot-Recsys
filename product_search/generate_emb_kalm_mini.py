@@ -21,22 +21,17 @@ def sentence2emb(args, order_texts, feat_name, model, prompt=None, typ=None):
         sentences = order_texts[start: start + batch_size]
         with torch.no_grad():
             if typ == 'query':
-                # outputs = model.encode(sentences, prompt_name="query")
-                # outputs = model.encode(sentences, normalize_embeddings=True)
                 tokenized = model.tokenizer(sentences, padding=True, truncation=True, return_tensors="pt")
                 tokenized = {key: val.to(model.device) for key, val in tokenized.items()}  # Move tensors to device
                 outputs = model(tokenized)['sentence_embedding'].detach().cpu()
                 outputs = F.normalize(outputs, p=2, dim=1)
             elif typ == 'item':
-                # outputs = model.encode(sentences, normalize_embeddings=True)
-                # outputs = model.encode(sentences)
                 tokenized = model.tokenizer(sentences, padding=True, truncation=True, return_tensors="pt")
                 tokenized = {key: val.to(model.device) for key, val in tokenized.items()}  # Move tensors to device
                 outputs = model(tokenized)['sentence_embedding'].detach().cpu()
                 outputs = F.normalize(outputs, p=2, dim=1)
             else:
                 raise ValueError("typ must be 'query' or 'item'")
-        # print(outputs.shape)
         embeddings.extend(torch.tensor(outputs))
         # del outputs
         # torch.cuda.empty_cache()
@@ -45,7 +40,7 @@ def sentence2emb(args, order_texts, feat_name, model, prompt=None, typ=None):
     print('Embeddings shape: ', embeddings.shape)
 
     file = os.path.join(args.cache_path, args.dataset_name,
-                        args.dataset_name + f'.{feat_name}' + args.emb_type)
+                        args.dataset_name + f'.{feat_name}')
     embeddings.tofile(file)
 
 
@@ -98,12 +93,10 @@ def load_plm(model_name='HIT-TMG/KaLM-embedding-multilingual-mini-v1', device='c
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dataset', type=str, default='esci', choices=['McAuley-Lab/Amazon-C4', 'esci'])
+    parser.add_argument('--dataset', type=str, default='McAuley-Lab/Amazon-C4', choices=['McAuley-Lab/Amazon-C4', 'esci'])
     parser.add_argument('--cache_path', type=str, default='./cache/')
     parser.add_argument('--gpu_id', type=int, default=0, help='ID of running GPU')
-    # parser.add_argument('--plm_name', type=str, default='hyp1231/blair-roberta-base')
     parser.add_argument('--plm_name', type=str, default='HIT-TMG/KaLM-embedding-multilingual-mini-v1')
-    parser.add_argument('--emb_type', type=str, default='CLS', help='item text emb type, can be CLS or Mean')
     parser.add_argument('--feat_name', type=str, default='kalm-mini', help='')
     return parser.parse_args()
 
