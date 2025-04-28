@@ -2,7 +2,7 @@
 
 This repository contains the code to reproduce the experiments from the paper **"Do We Really Need Specialization? Evaluating Generalist Text Embeddings for Zero-Shot Recommendation and Search"**, under review at RecSys25.  
 All experiments were conducted on a machine equipped with an **AMD EPYC 7452** processor and an **NVIDIA H100 NVL** GPU running **Ubuntu 22.04 LTS**.  
-The code should be reproducible on other operating systems with minimal adjustments.
+The code should be reproducible on other operating systems with minimal adjustments. Note that the codebase is based on https://github.com/hyp1231/AmazonReviews2023.
 
 
 ## Setting Up the Virtual Environment
