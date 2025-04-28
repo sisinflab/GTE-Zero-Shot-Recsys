@@ -1,6 +1,6 @@
 # Do We Really Need Specialization? Evaluating Generalist Text Embeddings for Zero-Shot Recommendation and Search
 
-This repository contains the code to reproduce the experiments from the paper **"Do We Really Need Specialization? Evaluating Generalist Text Embeddings for Zero-Shot Recommendation and Search."**  
+This repository contains the code to reproduce the experiments from the paper **"Do We Really Need Specialization? Evaluating Generalist Text Embeddings for Zero-Shot Recommendation and Search"**, under review at RecSys25.  
 All experiments were conducted on a machine equipped with an **AMD EPYC 7452** processor and an **NVIDIA H100 NVL** GPU running **Ubuntu 22.04 LTS**.  
 The code should be reproducible on other operating systems with minimal adjustments.
 
@@ -54,7 +54,7 @@ python create_config.py \
     -m <model_name> \
     --plm <plm_type> \
 ```
-where:
+**Arguments**
 - `-m`: The sequential recommendation model you want to test. Please, select one of `UniSRec`, `SASRecText`, `GRU4RecText`.
 - `--plm`: The PLM type. Plese, select one of `blair-base`, `blair-large`, `nvembedv2`, `kalm`, `openai`.
 
@@ -66,7 +66,7 @@ python run.py \
     -d <domain_name> \
     --gpu_id=<gpu_id>
 ```
-where:
+**Arguments**
 - `-m`: The sequential recommendation model you want to test. Please, select one of the following: `UniSRec`, `SASRecText`, `GRU4RecText` for the text-based baselines.
 - `-d`: The domain of the Amazon Reviews 2023 dataset you are considering. Select one of `All_Beauty`, `Video_Games`, `Baby_Products`.
 - `-gpu_id`: The id of the available GPU. If it is only one, please select 0.
@@ -83,32 +83,35 @@ Download the processed data from [Google Drive](https://drive.google.com/file/d/
 To generate query/item representations, navigate to the folder `product_search/`. Here there are several scripts to generate the query/item representations and cache them with all the models considered in the paper. 
 
 > [!NOTE]  
-> For the `text-embedding-3-large` you are required to put your ENDPOINT and API-KEY to access to OpenAI models. Only `blair` embeddings can be genetated by the same script, namely `generate_emb_blair`.
+> For the `text-embedding-3-large` you are required to put your ENDPOINT and API-KEY to access to OpenAI models.
 
-To generate blair embeddings you may run the following commands:
+To generate `blair` embeddings (for `base` and `large` variants) you may run the following commands:
 ```bash
 python generate_emb_blair.py --dataset <dataset_name> --plm_name <plm_name> --feat_name blair-base
 ```
-Where:
+**Arguments**
 - `--dataset`: The dataset you want to consider. It must be either `McAuley-Lab/Amazon-C4` or `esci`.
-- `--plm_name`: The version of the blair model you want to consider. It may be `hyp1231/blair-roberta-base` or `hyp1231/blair-roberta-base`.
+- `--plm_name`: The version of the blair model you want to consider. It may be `hyp1231/blair-roberta-base` or `hyp1231/blair-roberta-large`.
 - `--feat_name`: The name of the serialized features.
 
-For the other models you don't need to specify the `--plm_name`. For instance, for `NVEmbedv2` you may run the following:
+For the other models you don't need to specify `--plm_name`. For instance, for `NVEmbedv2` you may run the following:
 ```bash
-python generate_emb_nvembedv2.py --dataset <dataset_name>
+python generate_emb_nvembedv2.py --dataset <dataset_name> --feat_name <feat_name>
 ```
+
+Upon completion, the script saves the query and item embeddings into two separate files within the `cache` directory, organized by `dataset`: <dataset_name>.q_<feat_name> for query embeddings, and <dataset_name>.<feat_name> for item embeddings.
 
 ## Evaluate Product Search Performance
 
 ```bash
-python eval_search.py --dataset <dataset_name> --suffix <embedding_suffix> --domain
+python eval_search.py --dataset <dataset_name> --suffix <embedding_suffix> --plm_size <embedding_dimension> --domain
 ```
 
-Where 
+**Arguments**
 - `--dataset`: The dataset you want to consider. It must be either `McAuley-Lab/Amazon-C4` or `esci`.
-- `--suffix`: The suffix of the embeddings you extracted.
+- `--suffix`: The suffix of the embeddings you extracted. It corresponds to `feat_name`.
 - `--domain`: Whether to extract the results for each domain of the dataset.
+- `--plm_size`: Specifies the dimensionality of the embeddings being evaluated. For the exact dimensions of each embedding, please refer to Table 2 in our paper. 
 
 
 For `BM25`, please run the following command:
@@ -117,9 +120,24 @@ For `BM25`, please run the following command:
 python bm25.py --dataset <dataset_name>
 ```
 
-Where 
+**Arguments**
 - `--dataset`: The dataset you want to consider. It must be either `McAuley-Lab/Amazon-C4` or `esci`.
 
+## Analysis of the Effective Dimensionality of Embeddings
+
+To compute the effective dimension of the embeddings (as in Section 4.3 of our paper), and save the corresponding reduced versions, please run the following:
+
+```bash
+python apply_pca.py --dataset <dataset_name> --suffix <embedding_suffix> --plm_size <embedding_dimension>  
+```
+**Arguments**
+- `--dataset`: The dataset you want to consider. It must be either `McAuley-Lab/Amazon-C4` or `esci`.
+- `--suffix`: The suffix of the embeddings you extracted. It corresponds to `feat_name`.
+- `--plm_size`: Specifies the dimensionality of the embeddings being evaluated. For the exact dimensions of each embedding, please refer to Table 2 in our paper. 
+
+The script saves the reduced embeddings by appending the suffix `_PCA80` for the version retaining 80% of the variance, and `_PCA95` for the version retaining 95% of the variance. Additionally, it displays the resulting effective dimensionality for each threshold.
+
+You can evaluate the performance of these embeddings by following the procedure outlined in the previous section.
 
 ## Acknowledgement
-The codebase is built upon [this repository](https://github.com/hyp1231/AmazonReviews2023) 
+The codebase is built upon [this repository](https://github.com/hyp1231/AmazonReviews2023).

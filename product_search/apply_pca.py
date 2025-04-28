@@ -53,5 +53,6 @@ queries_c_95 = queries_c @ Vh[:num_components_95].T
 items_c_95.detach().cpu().numpy().astype(np.float32).tofile(item_path+'_PCA95')
 queries_c_95.detach().cpu().numpy().astype(np.float32).tofile(query_path+'_PCA95')
 
-print(num_components_80, num_components_95)
+print(f'Components @80: {num_components_80}')
+print(f'Components @95: {num_components_95}')
 
