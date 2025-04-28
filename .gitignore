@@ -178,3 +178,6 @@ v
 *.npy
 *.pt
 *.zip
+log_tensorboard
+saved/
+processed/

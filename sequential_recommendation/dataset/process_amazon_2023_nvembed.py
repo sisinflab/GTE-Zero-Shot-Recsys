@@ -203,7 +203,6 @@ if __name__ == '__main__':
     all_embeddings = []
     for pr in tqdm(range(0, len(sorted_text), args.batch_size)):
         batch = sorted_text[pr:pr + args.batch_size]
-        # inputs = tokenizer(batch, padding=True, truncation=True, max_length=512, return_tensors='pt').to(device)
         with torch.no_grad():
             outputs = model.encode(batch, instruction="", max_length=512)
             outputs = F.normalize(outputs, p=2, dim=1)

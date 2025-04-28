@@ -5,8 +5,6 @@ import os
 
 
 parser = argparse.ArgumentParser()
-# parser.add_argument('--suffix', type=str, default='Amazon-C4.blair-baseCLS', help='suffix of the embs')
-# parser.add_argument('--plm_size', type=int, default=768, help='suffix of the embs')
 parser.add_argument('--suffix', type=str, required=True, help='suffix of the embs')
 parser.add_argument('--plm_size', type=int, required=True, help='suffix of the embs')
 args = parser.parse_args()

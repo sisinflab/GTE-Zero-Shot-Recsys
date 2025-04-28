@@ -3,7 +3,7 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-m', type=str, required=True, help='model name', choices=['UniSRec', 'SASRecText', 'GRU4RecText'])
-parser.add_argument('-plm', type=str, required=True, help='plm_name', choices=['blair-base', 'blair-large', 'nvembedv2', 'kalm', 'openai'])
+parser.add_argument('--plm', type=str, required=True, help='plm_name', choices=['blair-base', 'blair-large', 'nvembedv2', 'kalm', 'openai'])
 args, unparsed = parser.parse_known_args()
 
 if args.plm == 'blair-base':

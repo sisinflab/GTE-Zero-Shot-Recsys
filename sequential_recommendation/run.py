@@ -8,7 +8,7 @@ from recbole.utils import init_seed, init_logger, set_color, get_trainer
 from utils import get_model, create_dataset
 
 
-def run_single(model_name, dataset, pretrained_file='', **kwargs):
+def run_single(model_name, dataset, **kwargs):
     # configurations initialization
     props = ['config/overall.yaml', f'config/{model_name}.yaml']
     print(props)
@@ -32,13 +32,6 @@ def run_single(model_name, dataset, pretrained_file='', **kwargs):
 
     # model loading and initialization
     model = model_class(config, train_data.dataset).to(config['device'])
-
-    # Load pre-trained model
-    if pretrained_file != '':
-        checkpoint = torch.load(pretrained_file)
-        logger.info(f'Loading from {pretrained_file}')
-        model.load_state_dict(checkpoint['state_dict'], strict=False)
-    logger.info(model)
 
     # trainer loading and initialization
     trainer = get_trainer(config['MODEL_TYPE'], config['model'])(config, model)
@@ -68,4 +61,4 @@ if __name__ == '__main__':
     args, unparsed = parser.parse_known_args()
     print(args)
 
-    run_single(args.m, args.d, pretrained_file=args.p)
+    run_single(args.m, args.d)
