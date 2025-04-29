@@ -72,6 +72,9 @@ python run.py \
 - `-d`: The domain of the Amazon Reviews 2023 dataset you are considering. Provide one of `All_Beauty`, `Video_Games`, `Baby_Products`.
 - `-gpu_id`: The id of the available GPU. If it is only one, please select 0.
 
+> [!NOTE]  
+> If you encounter issues related to data types, please add the following line to the beginning of the `recbole/evaluator/metrics.py`: `np.float = float`.
+
 
 # Product Search
 
