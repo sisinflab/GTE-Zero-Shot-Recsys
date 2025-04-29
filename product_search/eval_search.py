@@ -123,7 +123,6 @@ if __name__ == '__main__':
             results.append(ndcg)
     
     results = np.concatenate(results)
-    #salva results
     print(args)
     print(f'Overall NDCG@{args.k}: {results.mean()}')
 

@@ -1,6 +1,7 @@
 # Do We Really Need Specialization? Evaluating Generalist Text Embeddings for Zero-Shot Recommendation and Search
 
-This repository contains the code to reproduce the experiments from the paper **"Do We Really Need Specialization? Evaluating Generalist Text Embeddings for Zero-Shot Recommendation and Search"**, under review at RecSys25.  
+This repository contains the code to reproduce the experiments from the paper **"Do We Really Need Specialization? Evaluating Generalist Text Embeddings for Zero-Shot Recommendation and Search"**, under review at ACM RecSys ‘25.  
+
 All experiments were conducted on a machine equipped with an **AMD EPYC 7452** processor and an **NVIDIA H100 NVL** GPU running **Ubuntu 22.04 LTS**.  
 The code should be reproducible on other operating systems with minimal adjustments. Note that the codebase is based on https://github.com/hyp1231/AmazonReviews2023.
 
@@ -23,7 +24,7 @@ pip3 install -r requirements.txt
 The `sequential_recommendation` directory contains scripts for processing datasets and running experiments for sequential recommendation tasks.
 
 ## Dataset Processing
-To process the dataset, please navigate to `sequential_recommendation/dataset` folder. Four scripts are provided to download and preprocess datasets using different PLMs.
+To process the dataset, please navigate to the `sequential_recommendation/dataset` folder. Four scripts are provided to download and preprocess datasets using different PLMs.
 
 > [!NOTE]  
 > For the `text-embedding-3-large` please supply your API endpoint and API key
@@ -40,7 +41,7 @@ python process_amazon_2023.py \
 **Arguments**:
 - `--domain`: The domain of the Amazon Reviews 2023 dataset you are considering. Select one of `All_Beauty`, `Video_Games`, `Baby_Products`.
 - `--device`: Specify `cuda:0` or `cpu`.
-- `--plm`: The version of `blair` you are considering. Select one of `hyp1231/blair-roberta-base`, `hyp1231/blair-roberta-large`.
+- `--plm`: The version of `blair` you are considering. Choose one of `hyp1231/blair-roberta-base`, `hyp1231/blair-roberta-large`.
 
 Similarly, datasets can be processed for `text-embedding-3-large`, `KALM`, and `NVEmbed-v2`.
 <!-- you can download and process the dataset with the other PLMs, namely `text-embedding-3-large`, `KALM`, and `NVEmbed-v2` -->
@@ -55,10 +56,10 @@ python create_config.py \
     --plm <plm_type> \
 ```
 **Arguments**
-- `-m`: The sequential recommendation model you want to test. Please, select one of `UniSRec`, `SASRecText`, `GRU4RecText`.
+- `-m`: The sequential recommendation model you want to test. Please, specify one of `UniSRec`, `SASRecText`, `GRU4RecText`.
 - `--plm`: The PLM type. Plese, select one of `blair-base`, `blair-large`, `nvembedv2`, `kalm`, `openai`.
 
-Once you create the necessary config files, you can run the experiments via the following command:
+Once you created the necessary config files, you can run the experiments via the following command:
 
 ```bash
 python run.py \
@@ -67,15 +68,17 @@ python run.py \
     --gpu_id=<gpu_id>
 ```
 **Arguments**
-- `-m`: The sequential recommendation model you want to test. Please, select one of the following: `UniSRec`, `SASRecText`, `GRU4RecText` for the text-based baselines.
-- `-d`: The domain of the Amazon Reviews 2023 dataset you are considering. Select one of `All_Beauty`, `Video_Games`, `Baby_Products`.
+- `-m`: The sequential recommendation model you want to test. Please, specify one of the following: `UniSRec`, `SASRecText`, `GRU4RecText` for the text-based baselines.
+- `-d`: The domain of the Amazon Reviews 2023 dataset you are considering. Provide one of `All_Beauty`, `Video_Games`, `Baby_Products`.
 - `-gpu_id`: The id of the available GPU. If it is only one, please select 0.
 
 
 # Product Search
 
 ## Download data
-Download the processed data from [Google Drive](https://drive.google.com/file/d/1p_x0ec1PgRxLzpcj7dAcasDU-4P8CeN6/view?usp=sharing). Unzip and put `sampled_item_metadata_esci.jsonl` and `test.csv` under `product_search/cache/esci/`;
+For the ESCI dataset, please download the processed data from [Google Drive](https://drive.google.com/file/d/1p_x0ec1PgRxLzpcj7dAcasDU-4P8CeN6/view?usp=sharing). After downloading, unzip the archive and and put `sampled_item_metadata_esci.jsonl` and `test.csv` under `product_search/cache/esci/`. 
+
+For Amazon-C4 no operations are needed, it will be automatically downloaded.
 
 
 ## Generate Query/Item Representations
@@ -83,7 +86,7 @@ Download the processed data from [Google Drive](https://drive.google.com/file/d/
 To generate query/item representations, navigate to the folder `product_search/`. Here there are several scripts to generate the query/item representations and cache them with all the models considered in the paper. 
 
 > [!NOTE]  
-> For the `text-embedding-3-large` you are required to put your ENDPOINT and API-KEY to access to OpenAI models.
+> For `text-embedding-3-large` please ensure that your OpenAI API endpoint and API key are correctly inserted into the corresponding script.
 
 To generate `blair` embeddings (for `base` and `large` variants) you may run the following commands:
 ```bash
@@ -92,14 +95,14 @@ python generate_emb_blair.py --dataset <dataset_name> --plm_name <plm_name> --fe
 **Arguments**
 - `--dataset`: The dataset you want to consider. It must be either `McAuley-Lab/Amazon-C4` or `esci`.
 - `--plm_name`: The version of the blair model you want to consider. It may be `hyp1231/blair-roberta-base` or `hyp1231/blair-roberta-large`.
-- `--feat_name`: The name of the serialized features.
+- `--feat_name`: The name of the serialized features (e.g., `blair-base`)
 
-For the other models you don't need to specify `--plm_name`. For instance, for `NVEmbedv2` you may run the following:
+For the other GTEs you do not have to specify `--plm_name`. For instance, for `NVEmbedv2` you may run the following:
 ```bash
 python generate_emb_nvembedv2.py --dataset <dataset_name> --feat_name <feat_name>
 ```
 
-Upon completion, the script saves the query and item embeddings into two separate files within the `cache` directory, organized by `dataset`: <dataset_name>.q_<feat_name> for query embeddings, and <dataset_name>.<feat_name> for item embeddings.
+Upon completion, the script saves the query and item embeddings into two separate files within the `cache` directory, organized by `dataset`: <dataset_name>.q_<feat_name> for query embeddings ("q_" stands for query), and <dataset_name>.<feat_name> for item embeddings.
 
 ## Evaluate Product Search Performance
 
@@ -125,7 +128,7 @@ python bm25.py --dataset <dataset_name>
 
 ## Analysis of the Effective Dimensionality of Embeddings
 
-To compute the effective dimension of the embeddings (as in Section 4.3 of our paper), and save the corresponding reduced versions, please run the following:
+To compute the effective dimension of the embeddings (as in Section 4.3 of our paper) and to save the corresponding reduced versions, please run the following:
 
 ```bash
 python apply_pca.py --dataset <dataset_name> --suffix <embedding_suffix> --plm_size <embedding_dimension>  
