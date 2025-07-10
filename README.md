@@ -1,6 +1,6 @@
 # Do We Really Need Specialization? Evaluating Generalist Text Embeddings for Zero-Shot Recommendation and Search
 
-This repository contains the code to reproduce the experiments from the paper **"Do We Really Need Specialization? Evaluating Generalist Text Embeddings for Zero-Shot Recommendation and Search"**, under review at ACM RecSys ‘25.  
+This repository contains the code to reproduce the experiments from the paper **"Do We Really Need Specialization? Evaluating Generalist Text Embeddings for Zero-Shot Recommendation and Search"**, accepted at ACM RecSys ‘25.  
 
 All experiments were conducted on a machine equipped with an **AMD EPYC 7452** processor and an **NVIDIA H100 NVL** GPU running **Ubuntu 22.04 LTS**.  
 The code should be reproducible on other operating systems with minimal adjustments. Note that the codebase is based on https://github.com/hyp1231/AmazonReviews2023.
@@ -145,5 +145,15 @@ The script saves the reduced embeddings by appending the suffix `_PCA80` for the
 
 You can evaluate the performance of these embeddings by following the procedure outlined in the previous section.
 
+## The team
+Currently, this repository is maintained by:
+- Matteo Attimonelli (matteo.attimonelli@poliba.it)
+- Alessandro De Bellis (alessandro.debellis@poliba.it)
+- Claudio Pomo (claudio.pomo@poliba.it)
+
+The scientific supervision is driven by:
+- Dietmar Jannach (dietmar.jannach@aau.at)
+- Eugenio Di Sciascio (eugenio.disciascio@poliba.it)
+- Tommaso Di Noia (tommaso.dinoia@poliba.it)
 ## Acknowledgement
 The codebase is built upon [this repository](https://github.com/hyp1231/AmazonReviews2023).
